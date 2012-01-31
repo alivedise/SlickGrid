@@ -19,8 +19,9 @@
 if (typeof jQuery === "undefined") {
     throw "SlickGrid requires jquery module to be loaded";
 }
-if (!jQuery.fn.drag) {
-    throw "SlickGrid requires jquery.event.drag module to be loaded";
+// Alive: avoid event naming collision, rename drag to _drag
+if (!jQuery.fn._drag) {
+    throw "SlickGrid requires jquery.event._drag module to be loaded";
 }
 if (typeof Slick === "undefined") {
     throw "slick.core.js not loaded";
@@ -264,10 +265,10 @@ if (typeof Slick === "undefined") {
                 .bind("click.slickgrid", handleClick)
                 .bind("dblclick.slickgrid", handleDblClick)
                 .bind("contextmenu.slickgrid", handleContextMenu)
-                .bind("draginit", handleDragInit)
-                .bind("dragstart", handleDragStart)
-                .bind("drag", handleDrag)
-                .bind("dragend", handleDragEnd);
+                .bind("_draginit", handleDragInit)
+                .bind("_dragstart", handleDragStart)
+                .bind("_drag", handleDrag)
+                .bind("_dragend", handleDragEnd);
 
             $canvas.delegate(".slick-cell", "mouseenter", handleMouseEnter);
             $canvas.delegate(".slick-cell", "mouseleave", handleMouseLeave);
@@ -535,7 +536,7 @@ if (typeof Slick === "undefined") {
                 $col = $(e);
                 $("<div class='slick-resizable-handle' />")
                     .appendTo(e)
-                    .bind("dragstart", function(e,dd) {
+                    .bind("_dragstart", function(e,dd) {
                         if (!getEditorLock().commitCurrentEdit()) { return false; }
                         pageX = e.pageX;
                         $(this).parent().addClass("slick-header-column-active");
@@ -585,7 +586,7 @@ if (typeof Slick === "undefined") {
                         minPageX = pageX - Math.min(shrinkLeewayOnLeft, stretchLeewayOnRight);
                         originalCanvasWidth = $canvas.width();
                     })
-                    .bind("drag", function(e,dd) {
+                    .bind("_drag", function(e,dd) {
                         var actualMinWidth, d = Math.min(maxPageX, Math.max(minPageX, e.pageX)) - pageX, x, ci;
                         if (d < 0) { // shrink column
                             x = d;
@@ -659,7 +660,7 @@ if (typeof Slick === "undefined") {
                             applyColumnWidths();
                         }
                     })
-                    .bind("dragend", function(e,dd) {
+                    .bind("_dragend", function(e,dd) {
                         var newWidth;
                         $(this).parent().removeClass("slick-header-column-active");
                         for (j = 0; j < columnElements.length; j++) {
@@ -773,7 +774,7 @@ if (typeof Slick === "undefined") {
             $container.unbind(".slickgrid");
             removeCssRules();
 
-            $canvas.unbind("draginit dragstart dragend drag");
+            $canvas.unbind("_draginit _dragstart _dragend _drag");
             $container.empty().removeClass(uid);
         }
 
